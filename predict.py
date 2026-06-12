@@ -8,6 +8,7 @@
 import os
 import argparse
 import numpy as np
+import librosa
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -125,11 +126,9 @@ def load_audio(path: str) -> torch.Tensor:
     )
     db_t = T.AmplitudeToDB(top_db=80)
 
-    wav, sr = torchaudio.load(path)
-    if sr != cfg.SAMPLE_RATE:
-        wav = T.Resample(sr, cfg.SAMPLE_RATE)(wav)
-    if wav.shape[0] > 1:
-        wav = wav.mean(dim=0, keepdim=True)
+    wav_np, sr = librosa.load(path, sr=cfg.SAMPLE_RATE, mono=True)
+    wav = torch.FloatTensor(wav_np).unsqueeze(0)  # (1, samples)
+
     n = wav.shape[1]
     wav = F.pad(wav, (0, cfg.MAX_SAMPLES - n)) if n < cfg.MAX_SAMPLES \
           else wav[:, :cfg.MAX_SAMPLES]
