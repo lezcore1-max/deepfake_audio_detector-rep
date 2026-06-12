@@ -7,6 +7,7 @@ import os
 import io
 import tempfile
 import numpy as np
+import librosa
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -233,7 +234,13 @@ def process_audio(file_bytes: bytes):
         tmp_path = tmp.name
 
     try:
-        wav, sr = torchaudio.load(tmp_path)
+      audio, sr = librosa.load(
+            tmp_path,
+            sr=None,
+            mono=True
+        )
+
+        wav = torch.tensor(audio, dtype=torch.float32).unsqueeze(0)
     finally:
         os.unlink(tmp_path)
 
