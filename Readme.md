@@ -80,7 +80,7 @@ deepfake-audio-detector/
 ---
 
 ## 🚀 Quick Start
-
+Make sure `best_model.pt` is in the same folder as `predict.py`
 ### 1. Install dependencies
 ```bash
 pip install -r requirements.txt
