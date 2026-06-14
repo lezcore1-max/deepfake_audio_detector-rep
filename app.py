@@ -675,9 +675,14 @@ def apply_audio_processing(file_bytes: bytes, normalize: bool, noise_gate: bool)
         return file_bytes
     finally:
         os.unlink(tmp_path)
+class MockUploadedFile:
+    def __init__(self, name: str, data: bytes):
+        self.name = name
+        self.size = len(data)
+        self._data = data
 
-
-
+    def read(self):
+        return self._data
 
 
 # ── App UI ────────────────────────────────────────────────────────────────────
@@ -852,20 +857,32 @@ def main():
         )
         st.stop()
 
-    # File uploader
-    st.markdown("### 📂 Upload Audio File")
-    uploaded = st.file_uploader(
-        label="Choose an audio file",
-        type=["wav", "mp3", "flac", "ogg"],
-        help="Supported formats: WAV, MP3, FLAC, OGG"
-    )
+    # File uploader or preset selector
+    if sample_select == "Sample A: Smooth Voice (Genuine Sim)":
+        st.markdown("### 📂 Presets Library")
+        st.info("🎵 Loaded Preset: **Sample A: Smooth Voice (Genuine Sim)**")
+        data = generate_sample_audio("genuine")
+        uploaded = MockUploadedFile("sample_vocal_genuine.wav", data)
+    elif sample_select == "Sample B: Robotic Tone (Deepfake Sim)":
+        st.markdown("### 📂 Presets Library")
+        st.info("🧬 Loaded Preset: **Sample B: Robotic Tone (Deepfake Sim)**")
+        data = generate_sample_audio("deepfake")
+        uploaded = MockUploadedFile("sample_phase_deepfake.wav", data)
+    else:
+        st.markdown("### 📂 Upload Audio File")
+        uploaded = st.file_uploader(
+            label="Choose an audio file",
+            type=["wav", "mp3", "flac", "ogg"],
+            help="Supported formats: WAV, MP3, FLAC, OGG"
+        )
 
     if uploaded is None:
-        st.info("👆 Upload an audio file above to get started.")
+        st.info("👆 Upload an audio file above or select a preset in the sidebar to get started.")
         return
 
-    # Read file bytes once
-    file_bytes = uploaded.read()
+    # Read file bytes once and apply preprocessing
+    raw_bytes = uploaded.read()
+    file_bytes = apply_audio_processing(raw_bytes, norm_toggle, gate_toggle)
     
     # Metadata extraction
     metadata = get_audio_metadata(file_bytes)
