@@ -307,6 +307,113 @@ st.markdown("""
         margin-top: 30px;
         letter-spacing: 0.5px;
     }
+
+    /* Sidebar styling overrides */
+    [data-testid="stSidebar"] {
+        background-color: #09090f !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+        font-family: 'Outfit', sans-serif !important;
+    }
+    
+    /* Checkbox overrides */
+    [data-testid="stSidebar"] .stCheckbox > label {
+        color: #cbd5e1 !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.85rem !important;
+    }
+    [data-testid="stSidebar"] .stCheckbox > label:hover {
+        color: #ffffff !important;
+    }
+    
+    /* Selectbox (Dropdown) styling */
+    [data-testid="stSidebar"] [data-baseweb="select"] {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 10px !important;
+    }
+    [data-testid="stSidebar"] [data-baseweb="select"]:hover {
+        border-color: rgba(6, 182, 212, 0.35) !important;
+        background-color: rgba(255, 255, 255, 0.04) !important;
+    }
+    [data-testid="stSidebar"] [data-baseweb="select"] div {
+        color: #ffffff !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Slider track & thumb styling */
+    [data-testid="stSidebar"] .stSlider [data-baseweb="slider"] > div:first-child {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        height: 6px !important;
+        border-radius: 4px !important;
+    }
+    [data-testid="stSidebar"] .stSlider [data-baseweb="slider"] div[role="presentation"] {
+        background-image: linear-gradient(90deg, #7c3aed, #06b6d4) !important;
+        height: 6px !important;
+        border-radius: 4px !important;
+    }
+    [data-testid="stSidebar"] .stSlider [role="slider"] {
+        background-color: #06b6d4 !important;
+        border: 2px solid #7c3aed !important;
+        box-shadow: 0 0 10px rgba(6, 182, 212, 0.8) !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+    /* Slider value display */
+    [data-testid="stSidebar"] .stSlider [data-testid="stWidgetLabel"] + div {
+        font-family: 'Outfit', sans-serif !important;
+        color: #22d3ee !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Segmented Selector Tabs from Horizontal Radio Buttons */
+    div[data-testid="stRadio"] > div[role="radiogroup"] {
+        display: flex !important;
+        flex-direction: row !important;
+        background: rgba(22, 22, 38, 0.4) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 12px !important;
+        padding: 4px !important;
+        gap: 6px !important;
+    }
+    div[data-testid="stRadio"] label {
+        flex: 1 !important;
+        text-align: center !important;
+        justify-content: center !important;
+        padding: 8px 16px !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        transition: all 0.3s ease !important;
+        background: transparent !important;
+        border: none !important;
+        color: #94a3b8 !important;
+    }
+    div[data-testid="stRadio"] label:hover {
+        background: rgba(255, 255, 255, 0.03) !important;
+        color: #ffffff !important;
+    }
+    /* Target the selected label in newer Streamlit versions */
+    div[data-testid="stRadio"] label[data-checked="true"],
+    div[data-testid="stRadio"] label:has(input:checked) {
+        background: linear-gradient(135deg, #7c3aed, #06b6d4) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25) !important;
+    }
+    /* Hide default radio input indicator circles completely */
+    div[data-testid="stRadio"] label span[data-testid="stWidgetLabel"] {
+        display: none !important;
+    }
+    div[data-testid="stRadio"] label div[role="presentation"],
+    div[data-testid="stRadio"] label svg,
+    div[data-testid="stRadio"] label input[type="radio"] {
+        display: none !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
