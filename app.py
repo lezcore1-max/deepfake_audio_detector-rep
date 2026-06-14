@@ -745,6 +745,7 @@ def main():
         label_visibility="collapsed",
         options=[
             "Upload my own file", 
+            "Record audio from microphone", 
             "Sample A: Smooth Voice (Genuine Sim)", 
             "Sample B: Robotic Tone (Deepfake Sim)"
         ]
@@ -857,7 +858,7 @@ def main():
         )
         st.stop()
 
-    # File uploader or preset selector
+    # File uploader or preset selector or microphone recorder
     if sample_select == "Sample A: Smooth Voice (Genuine Sim)":
         st.markdown("### 📂 Presets Library")
         st.info("🎵 Loaded Preset: **Sample A: Smooth Voice (Genuine Sim)**")
@@ -868,6 +869,12 @@ def main():
         st.info("🧬 Loaded Preset: **Sample B: Robotic Tone (Deepfake Sim)**")
         data = generate_sample_audio("deepfake")
         uploaded = MockUploadedFile("sample_phase_deepfake.wav", data)
+    elif sample_select == "Record audio from microphone":
+        st.markdown("### 🎙️ Record Audio")
+        uploaded = st.audio_input(
+            label="Record your voice",
+            help="Click the microphone to start recording. Speak for 2-4 seconds."
+        )
     else:
         st.markdown("### 📂 Upload Audio File")
         uploaded = st.file_uploader(
@@ -877,8 +884,14 @@ def main():
         )
 
     if uploaded is None:
-        st.info("👆 Upload an audio file above or select a preset in the sidebar to get started.")
+        st.info("👆 Upload an audio file, record your voice, or select a preset in the sidebar to get started.")
         return
+
+    # Add attributes to uploaded object if missing (e.g. from st.audio_input)
+    if not hasattr(uploaded, "name") or not uploaded.name:
+        uploaded.name = "recorded_audio.wav"
+    if not hasattr(uploaded, "size") or not uploaded.size:
+        uploaded.size = len(uploaded.getvalue()) if hasattr(uploaded, "getvalue") else 0
 
     # Read file bytes once and apply preprocessing
     raw_bytes = uploaded.read()
