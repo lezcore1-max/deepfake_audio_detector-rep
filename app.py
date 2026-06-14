@@ -686,9 +686,23 @@ def main():
 
     # Initialize session state for analysis history and latency
     if "history" not in st.session_state:
-        st.session_state.history = []
+        st.session_state.history = [
+            {
+                "filename": "demo_human_voice.wav",
+                "label": "Genuine",
+                "confidence": 0.982,
+                "timestamp": "12:15:32"
+            },
+            {
+                "filename": "demo_cloned_voice.mp3",
+                "label": "Deepfake",
+                "confidence": 0.999,
+                "timestamp": "12:16:45"
+            }
+        ]
     if "last_latency" not in st.session_state:
-        st.session_state.last_latency = None
+        st.session_state.last_latency = 124.5
+
 
     # Sidebar Scan Control Panel
     st.sidebar.markdown("""
