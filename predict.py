@@ -166,7 +166,7 @@ def predict(audio_path: str, model_path: str, device: torch.device) -> dict:
     with torch.no_grad():
         probs = torch.softmax(model(mel), dim=1)[0].cpu().numpy()
 
-    THRESHOLD = 0.000018
+    THRESHOLD = 0.000010
     label = "Deepfake" if probs[1] >= THRESHOLD else "Genuine"
     return {
         "label"        : label,
@@ -210,13 +210,22 @@ def main():
     result = predict(args.audio, args.model, device)
 
     sep = "=" * 50
-    label_display = (
-        f"✅  GENUINE  (Human Speech)"
-        if result["label"] == "Genuine"
-        else f"⚠️   DEEPFAKE (AI-Generated)"
-    )
-    print(f"\n{sep}")
-    print(f"  Result     : {label_display}")
+    try:
+        label_display = (
+            f"✅  GENUINE  (Human Speech)"
+            if result["label"] == "Genuine"
+            else f"⚠️   DEEPFAKE (AI-Generated)"
+        )
+        print(f"\n{sep}")
+        print(f"  Result     : {label_display}")
+    except UnicodeEncodeError:
+        label_display = (
+            "GENUINE  (Human Speech)"
+            if result["label"] == "Genuine"
+            else "DEEPFAKE (AI-Generated)"
+        )
+        print(f"\n{sep}")
+        print(f"  Result     : {label_display}")
     print(f"  Confidence : {result['confidence']*100:.1f}%")
     print(f"  Genuine    : {result['genuine_prob']*100:.1f}%")
     print(f"  Deepfake   : {result['deepfake_prob']*100:.1f}%")

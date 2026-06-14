@@ -834,7 +834,7 @@ def main():
         label_visibility="collapsed",
         min_value=0.000001,
         max_value=0.000100,
-        value=0.000018,
+        value=0.000010,
         step=0.000001,
         format="%.6f",
         help="Adjust detection sensitivity. Higher values reduce false alarms but may miss subtle AI deepfakes."
