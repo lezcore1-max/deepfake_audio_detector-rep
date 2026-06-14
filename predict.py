@@ -183,11 +183,19 @@ def predict(audio_path: str, model_path: str, device: torch.device) -> dict:
             confidence = 0.5 + 0.5 * (log_p - log_thresh) / (0.0 - log_thresh)
             confidence = min(1.0, max(0.5, confidence))
 
+    # Calibrate displayed probabilities to match the decision boundary
+    if label == "Deepfake":
+        display_deepfake_prob = confidence
+        display_genuine_prob = 1.0 - display_deepfake_prob
+    else:
+        display_genuine_prob = confidence
+        display_deepfake_prob = 1.0 - display_genuine_prob
+
     return {
         "label"        : label,
         "confidence"   : confidence,
-        "genuine_prob" : float(probs[0]),
-        "deepfake_prob": float(probs[1]),
+        "genuine_prob" : display_genuine_prob,
+        "deepfake_prob": display_deepfake_prob,
     }
 
 

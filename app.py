@@ -1105,6 +1105,14 @@ def main():
                     log_thresh = math.log10(THRESHOLD)
                     confidence = 0.5 + 0.5 * (log_p - log_thresh) / (0.0 - log_thresh)
                     confidence = min(1.0, max(0.5, confidence))
+                    
+            # Calibrate displayed probabilities to match the decision boundary
+            if label == "Deepfake":
+                deepfake_prob = confidence
+                genuine_prob = 1.0 - deepfake_prob
+            else:
+                genuine_prob = confidence
+                deepfake_prob = 1.0 - genuine_prob
 
             # Add to history
             scan_entry = {
