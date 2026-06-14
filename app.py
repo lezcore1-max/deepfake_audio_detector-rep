@@ -745,7 +745,6 @@ def main():
         label_visibility="collapsed",
         options=[
             "Upload my own file", 
-            "Record audio from microphone", 
             "Sample A: Smooth Voice (Genuine Sim)", 
             "Sample B: Robotic Tone (Deepfake Sim)"
         ]
@@ -869,19 +868,28 @@ def main():
         st.info("🧬 Loaded Preset: **Sample B: Robotic Tone (Deepfake Sim)**")
         data = generate_sample_audio("deepfake")
         uploaded = MockUploadedFile("sample_phase_deepfake.wav", data)
-    elif sample_select == "Record audio from microphone":
-        st.markdown("### 🎙️ Record Audio")
-        uploaded = st.audio_input(
-            label="Record your voice",
-            help="Click the microphone to start recording. Speak for 2-4 seconds."
-        )
     else:
-        st.markdown("### 📂 Upload Audio File")
-        uploaded = st.file_uploader(
-            label="Choose an audio file",
-            type=["wav", "mp3", "flac", "ogg"],
-            help="Supported formats: WAV, MP3, FLAC, OGG"
-        )
+        st.markdown("### 📂 Audio Input Source")
+        tab_upload, tab_record = st.tabs(["📂 Upload File", "🎙️ Record Live Voice"])
+        
+        with tab_upload:
+            uploaded_file = st.file_uploader(
+                label="Choose an audio file",
+                type=["wav", "mp3", "flac", "ogg"],
+                help="Supported formats: WAV, MP3, FLAC, OGG"
+            )
+        with tab_record:
+            recorded_audio = st.audio_input(
+                label="Record your voice",
+                help="Click the microphone to start recording. Speak for 2-4 seconds."
+            )
+            
+        if uploaded_file is not None:
+            uploaded = uploaded_file
+        elif recorded_audio is not None:
+            uploaded = recorded_audio
+        else:
+            uploaded = None
 
     if uploaded is None:
         st.info("👆 Upload an audio file, record your voice, or select a preset in the sidebar to get started.")
