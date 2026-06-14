@@ -127,6 +127,10 @@ def load_audio(path: str) -> torch.Tensor:
     db_t = T.AmplitudeToDB(top_db=80)
 
     wav_np, sr = librosa.load(path, sr=cfg.SAMPLE_RATE, mono=True)
+    # Trim silence (energy-based, top_db=20) to align with training dataset preprocessing
+    trimmed_wav_np, _ = librosa.effects.trim(wav_np, top_db=20)
+    if len(trimmed_wav_np) > 0:
+        wav_np = trimmed_wav_np
     wav = torch.FloatTensor(wav_np).unsqueeze(0)  # (1, samples)
 
     n = wav.shape[1]

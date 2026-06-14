@@ -582,6 +582,10 @@ def process_audio(file_bytes: bytes):
             sr=None,
             mono=True
         )
+        # Trim silence (energy-based, top_db=20) to align with training dataset preprocessing
+        trimmed_audio, _ = librosa.effects.trim(audio, top_db=20)
+        if len(trimmed_audio) > 0:
+            audio = trimmed_audio
         wav = torch.tensor(audio, dtype=torch.float32).unsqueeze(0)
     finally:
         os.unlink(tmp_path)
