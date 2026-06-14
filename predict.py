@@ -168,9 +168,24 @@ def predict(audio_path: str, model_path: str, device: torch.device) -> dict:
 
     THRESHOLD = 0.000010
     label = "Deepfake" if probs[1] >= THRESHOLD else "Genuine"
+    
+    if label == "Genuine":
+        confidence = float(probs[0])
+    else:
+        import math
+        p = float(probs[1])
+        if p <= THRESHOLD:
+            confidence = 0.5
+        else:
+            p = min(1.0, p)
+            log_p = math.log10(p)
+            log_thresh = math.log10(THRESHOLD)
+            confidence = 0.5 + 0.5 * (log_p - log_thresh) / (0.0 - log_thresh)
+            confidence = min(1.0, max(0.5, confidence))
+
     return {
         "label"        : label,
-        "confidence"   : float(probs.max()),
+        "confidence"   : confidence,
         "genuine_prob" : float(probs[0]),
         "deepfake_prob": float(probs[1]),
     }

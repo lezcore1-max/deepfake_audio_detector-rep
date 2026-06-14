@@ -1092,7 +1092,19 @@ def main():
             deepfake_prob = float(probs[1])
             THRESHOLD = slider_threshold
             label = "Deepfake" if deepfake_prob >= THRESHOLD else "Genuine"
-            confidence = deepfake_prob if label == "Deepfake" else genuine_prob
+            
+            if label == "Genuine":
+                confidence = genuine_prob
+            else:
+                import math
+                if deepfake_prob <= THRESHOLD:
+                    confidence = 0.5
+                else:
+                    p = min(1.0, deepfake_prob)
+                    log_p = math.log10(p)
+                    log_thresh = math.log10(THRESHOLD)
+                    confidence = 0.5 + 0.5 * (log_p - log_thresh) / (0.0 - log_thresh)
+                    confidence = min(1.0, max(0.5, confidence))
 
             # Add to history
             scan_entry = {
