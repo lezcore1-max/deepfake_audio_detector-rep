@@ -870,26 +870,24 @@ def main():
         uploaded = MockUploadedFile("sample_phase_deepfake.wav", data)
     else:
         st.markdown("### 📂 Audio Input Source")
-        tab_upload, tab_record = st.tabs(["📂 Upload File", "🎙️ Record Live Voice"])
+        input_method = st.radio(
+            label="Input Method Selection",
+            options=["📂 Upload File", "🎙️ Record Live Voice"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
         
-        with tab_upload:
-            uploaded_file = st.file_uploader(
+        if input_method == "📂 Upload File":
+            uploaded = st.file_uploader(
                 label="Choose an audio file",
                 type=["wav", "mp3", "flac", "ogg"],
                 help="Supported formats: WAV, MP3, FLAC, OGG"
             )
-        with tab_record:
-            recorded_audio = st.audio_input(
+        else:
+            uploaded = st.audio_input(
                 label="Record your voice",
                 help="Click the microphone to start recording. Speak for 2-4 seconds."
             )
-            
-        if uploaded_file is not None:
-            uploaded = uploaded_file
-        elif recorded_audio is not None:
-            uploaded = recorded_audio
-        else:
-            uploaded = None
 
     if uploaded is None:
         st.info("👆 Upload an audio file, record your voice, or select a preset in the sidebar to get started.")
